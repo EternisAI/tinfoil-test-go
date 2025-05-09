@@ -22,10 +22,10 @@ func main() {
 	completion, err := client.Chat.Completions.New(
 		context.Background(),
 		openai.ChatCompletionNewParams{
-			Model: openai.F("llama3-3-70b"),
-			Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
+			Model: "llama3-3-70b",
+			Messages: []openai.ChatCompletionMessageParamUnion{
 				openai.UserMessage("Hello!"),
-			}),
+			},
 		},
 	)
 	if err != nil {
