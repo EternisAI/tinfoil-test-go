@@ -4,7 +4,7 @@ go 1.24.2
 
 require (
 	github.com/openai/openai-go v0.1.0-beta.10
-	github.com/tinfoilsh/tinfoil-go v0.0.3
+	github.com/tinfoilsh/tinfoil-go v0.0.4
 )
 
 require (

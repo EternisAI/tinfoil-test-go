@@ -44,7 +44,7 @@ func main() {
 		openai.ChatCompletionNewParams{
 			Model: "llama3-3-70b",
 			Messages: []openai.ChatCompletionMessageParamUnion{
-				openai.UserMessage("Hello!"),
+				openai.UserMessage("What is your name?"),
 			},
 			Tools: tools,
 		},
@@ -60,15 +60,39 @@ func main() {
 		openai.ChatCompletionNewParams{
 			Model: "llama3-3-70b",
 			Messages: []openai.ChatCompletionMessageParamUnion{
-				openai.UserMessage("Hello!"),
+				openai.UserMessage("What is your name?"),
 			},
 			Tools: tools,
 		},
 	)
+	acc := openai.ChatCompletionAccumulator{}
 
 	for stream.Next() {
 		chunk := stream.Current()
-		fmt.Println("streamchunk", chunk)
+		acc.AddChunk(chunk)
+
+		if content, ok := acc.JustFinishedContent(); ok {
+			println("Content stream finished:", content)
+		}
+
+		// if using tool calls
+		if tool, ok := acc.JustFinishedToolCall(); ok {
+			println("Tool call stream finished:", tool.Index, tool.Name, tool.Arguments)
+		}
+
+		if refusal, ok := acc.JustFinishedRefusal(); ok {
+			println("Refusal stream finished:", refusal)
+		}
+
+		if len(chunk.Choices) > 0 {
+			println(chunk.Choices[0].Delta.Content)
+		}
 	}
+
+	if stream.Err() != nil {
+		panic(stream.Err())
+	}
+
+	_ = acc.Choices[0].Message.Content
 
 }
